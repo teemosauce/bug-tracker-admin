@@ -1,7 +1,7 @@
 <script setup>
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/store/index";
-import { login } from "@/api/user";
+import { login, getInfo } from "@/api/user";
 
 console.log(login);
 let router = useRouter();

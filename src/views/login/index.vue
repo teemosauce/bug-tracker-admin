@@ -1,100 +1,13 @@
 <script setup>
 import { reactive, ref } from "vue";
-import { loadFull } from "tsparticles";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../../store";
+import { login, getInfo } from "@/api/user";
+import { ElMessage } from "element-plus";
 
-
-let userStore = useUserStore()
-console.log(userStore)
+let userStore = useUserStore();
+console.log(userStore);
 let router = useRouter();
-
-let particlesOptions = reactive({
-  background: {
-    color: {
-      value: "#02dea1",
-    },
-  },
-  fpsLimit: 120,
-  interactivity: {
-    events: {
-      onClick: {
-        enable: true,
-        mode: "push",
-      },
-      onHover: {
-        enable: true,
-        mode: "repulse",
-      },
-      resize: true,
-    },
-    modes: {
-      bubble: {
-        distance: 400,
-        duration: 2,
-        opacity: 0.8,
-        size: 40,
-      },
-      push: {
-        quantity: 4,
-      },
-      repulse: {
-        distance: 200,
-        duration: 0.4,
-      },
-    },
-  },
-  particles: {
-    color: {
-      value: "#ffffff",
-    },
-    links: {
-      color: "#ffffff",
-      distance: 150,
-      enable: true,
-      opacity: 0.5,
-      width: 1,
-    },
-    collisions: {
-      enable: true,
-    },
-    move: {
-      direction: "none",
-      enable: true,
-      outModes: {
-        default: "bounce",
-      },
-      random: false,
-      speed: 6,
-      straight: false,
-    },
-    number: {
-      density: {
-        enable: true,
-        area: 800,
-      },
-      value: 80,
-    },
-    opacity: {
-      value: 0.5,
-    },
-    shape: {
-      type: "circle",
-    },
-    size: {
-      value: { min: 1, max: 5 },
-    },
-  },
-  detectRetina: true,
-});
-
-const particlesInit = async (engine) => {
-  await loadFull(engine);
-};
-
-const particlesLoaded = async (container) => {
-  console.log("Particles container loaded", container);
-};
 
 // do not use same name with ref
 const form = reactive({
@@ -109,50 +22,52 @@ const rules = {
   password: [{ required: true, message: "请输入密码", trigger: "blur" }],
 };
 
-const onSubmit = () => {
+const handleLogin = () => {
   console.log(ruleFormRef.value);
-  ruleFormRef.value.validate((valid, fields) => {
+  ruleFormRef.value.validate(async (valid, fields) => {
     if (valid) {
+      let result;
+      try {
+        result = await login(form);
+        console.log(result);
         router.push({
-            path: '/'
-        })
-    } else {
-      console.log("error submit!", fields);
+          path: "/",
+        });
+      } catch ({ message }) {
+        ElMessage.error(message);
+      }
     }
   });
 };
 </script>
 
 <template>
-  <Particles
-    id="tsparticles"
-    :particlesInit="particlesInit"
-    :particlesLoaded="particlesLoaded"
-    :options="particlesOptions"
-  />
-  <el-form
-    ref="ruleFormRef"
-    :model="form"
-    :rules="rules"
-    label-width="120px"
-    size="default"
-    status-icon
-    width="420px"
-  >
-    <el-form-item label="用户名" prop="username" width="80px">
-      <el-input v-model="form.username" />
-    </el-form-item>
+  <div class="page-login">
+    <!-- <h1>BUG追踪管理系统</h1> -->
+    <el-form
+      ref="ruleFormRef"
+      :model="form"
+      :rules="rules"
+      label-width="120px"
+      size="default"
+      status-icon
+      width="420px"
+    >
+      <el-form-item label="用户名" prop="username" width="80px">
+        <el-input v-model="form.username" />
+      </el-form-item>
 
-    <el-form-item label="密码" prop="password">
-      <el-input v-model="form.password" width="80px" />
-    </el-form-item>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" width="80px" type="password" />
+      </el-form-item>
 
-    <el-form-item>
-      <el-button class="login-btn" type="primary" @click="onSubmit"
-        >登录</el-button
-      >
-    </el-form-item>
-  </el-form>
+      <el-form-item>
+        <el-button class="login-btn" type="primary" @click="handleLogin"
+          >登录</el-button
+        >
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -160,7 +75,44 @@ const onSubmit = () => {
   width: 420px;
 }
 
+::v-deep .el-form-item__label {
+  color: #fff;
+}
+
 .login-btn {
   width: 100%;
+}
+
+.page-login {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-image: linear-gradient(
+    125deg,
+    #069bb8,
+    #00b4bb,
+    #20cbb0,
+    #6dde9a,
+    #b1ee82
+  );
+  background-size: 400%;
+  animation: bg-moveable 20s infinite;
+}
+
+@keyframes bg-moveable {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>

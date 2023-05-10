@@ -1,12 +1,15 @@
-import request from "@/utils/request";
+import request from "@/utils/request.js";
 
 export let login = ({ username, password }) => {
-  console.log(request.post)
-  return request.post({
-    url: '/login',
-    // data: {
-    //   username,
-    //   password,
-    // },
+  return request.post('/user/login', {
+    username,
+    password,
   });
 };
+
+
+export let getInfo = (id) => {
+  return request.get(`/user/info?id=${id}`, {
+    id
+  })
+}

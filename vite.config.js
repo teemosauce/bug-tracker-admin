@@ -25,7 +25,10 @@ export default () => {
         "/api": {
           target: "http://localhost:3000",
           changeOrigin: true,
-          // rewrite: (path) => path.replace(/^\/api/, ""),
+          rewrite: (path) => {
+            // 去掉api
+            return path.replace(/^\/api/, "") 
+          },
         },
       },
     },
