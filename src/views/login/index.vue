@@ -43,7 +43,7 @@ const handleLogin = () => {
 
 <template>
   <div class="page-login">
-    <!-- <h1>BUG追踪管理系统</h1> -->
+    <h1>BUG Tracker</h1>
     <el-form
       ref="ruleFormRef"
       :model="form"
@@ -73,11 +73,15 @@ const handleLogin = () => {
 <style lang="scss" scoped>
 .el-form {
   width: 420px;
+
+  :deep(.el-form-item__label) {
+    color: #fff;
+  }
 }
 
-::v-deep .el-form-item__label {
-  color: #fff;
-}
+// :deep(.el-form-item__label) {
+//   color: #fff;
+// }
 
 .login-btn {
   width: 100%;

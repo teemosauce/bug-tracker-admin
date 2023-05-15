@@ -2,6 +2,7 @@
 import { useRoute, useRouter } from "vue-router";
 import { useUserStore } from "@/store/index";
 import { login, getInfo } from "@/api/user";
+import Test from "@/components/Test.vue";
 
 console.log(login);
 let router = useRouter();
@@ -29,11 +30,22 @@ let handleLogin = async () => {
 
 <template>
   <div class="dashboard" @click="handleLogin">{{ userStore.$state.name }}</div>
+
+  <Test></Test>
 </template>
-<style>
+<style lang="scss" scoped>
 .dashboard {
   width: 80px;
   height: 80px;
   background-color: aquamarine;
+}
+
+
+.test-container {
+  background-color: lightblue;
+}
+
+:deep(.yellow) {
+  background: blue;
 }
 </style>

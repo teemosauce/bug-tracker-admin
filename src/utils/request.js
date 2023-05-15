@@ -1,4 +1,7 @@
 import axios from "axios";
+import { useUserStore } from "@/store";
+
+
 
 axios.defaults.withCredentials = true
 axios.defaults.headers.post["Content-Type"] = 'application/json; charset=utf-8'
@@ -17,7 +20,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    let token = localStorage.getItem(TOKEN)
+    let token = useUserStore().token
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
@@ -34,7 +37,7 @@ instance.interceptors.response.use(
     let { authorization } = headers
     // 把token保存起来
     if (authorization) {
-      localStorage.setItem(TOKEN, authorization)
+      useUserStore().changeToken(authorization)
     }
 
     if (data.success) {
